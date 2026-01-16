@@ -1,41 +1,58 @@
+# ============================================
 # Welcome Branch
-# Libraries imported here
-import sys
-import time
-import os
+# Developer: Cayden Johnson
+# Program: InfoTechCenter OS Boot Screen
+# Version: 1.0
+# ============================================
 
-# Enable ANSI escape codes on Windows
+# Import required standard libraries
+import sys      # Used for writing output without a newline
+import time     # Used for delays (sleep)
+import os       # Used for operating system interactions
+
+# Enable ANSI escape codes on Windows terminals
+# This allows color codes to work properly
 if os.name == "nt":
     os.system("")
 
-# ANSI color codes
-GREEN = "\033[92m"
-BLACK_BG = "\033[40m"
-RESET = "\033[0m"
+# ANSI color codes for terminal styling
+GREEN = "\033[92m"      # Green text color
+BLACK_BG = "\033[40m"   # Black background color
+RESET = "\033[0m"       # Reset colors back to default
 
-# Clear screen and set colors
+# Clear screen styling and apply colors
 print(BLACK_BG + GREEN, end="")
 
+# Display welcome messages
 print("\nWelcome Branch - Developer: Cayden Johnson")
 print("\nWelcome to infotech center V.1.0")
 
-x = 0
-ellipsis = 0
+# Initialize counters
+x = 0           # Controls how long the boot loop runs
+ellipsis = 0    # Controls the number of dots in the loading animation
 
+# Boot-up animation loop
 while x != 20:
     x += 1
+
+    # Create loading message with animated dots
     ellipsisMessage = "InfoTechCenter OS Booting" + "." * ellipsis
     ellipsis += 1
 
+    # Overwrite the same line in the terminal
     sys.stdout.write("\r" + ellipsisMessage + "   ")
     sys.stdout.flush()
+
+    # Pause to create animation effect
     time.sleep(0.5)
 
+    # Reset dots after reaching three
     if ellipsis == 4:
         ellipsis = 0
 
+    # Final boot message when loop completes
     if x == 20:
         print("\nOperating system Booted up - Retina scammed - Access Granted")
 
-# Reset colors at the end
+# Reset terminal colors before exiting
 print(RESET)
