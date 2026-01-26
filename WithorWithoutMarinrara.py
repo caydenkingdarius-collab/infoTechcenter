@@ -1,32 +1,39 @@
 #Weather Branch
 
-# Import the random module so we can generate random choices and numbers
-import random
+# Function that determines the maximum allowed speed based on weather
+def speed_limiter(current_weather, desired_speed):
+    # Dictionary that maps weather conditions to max safe speeds (mph)
+    weather_speed_limits = {
+        "Sunny": 70,
+        "Cloudy": 65,
+        "Rainy": 55,
+        "Foggy": 45,
+        "Snowy": 35,
+        "Stormy": 30,
+        "Icy": 25
+    }
 
-# Define a function called weather
-def weather():
-    # A list of possible weather conditions
-    conditions = [
-        "Sunny ☀️",
-        "Cloudy ☁️",
-        "Rainy 🌧️",
-        "Stormy ⛈️",
-        "Snowy ❄️",
-        "Windy 🌬️",
-        "Foggy 🌫️"
-    ]
-    
-    # Generate a random temperature between -5 and 40 degrees Celsius
-    temperature = random.randint(-5, 40)
-    
-    # Randomly choose one weather condition from the list
-    condition = random.choice(conditions)
-    
-    # Return a formatted string describing the weather
-    return f"Today's weather: {condition}, Temperature: {temperature}°C"
+    # Get the max speed for the current weather
+    # If the weather is unknown, default to 50 mph
+    max_safe_speed = weather_speed_limits.get(current_weather, 50)
 
-# This block checks if the file is being run directly
-# (and not imported as a module in another file)
+    # If the desired speed is higher than what is safe,
+    # limit the speed to the max safe speed
+    if desired_speed > max_safe_speed:
+        return max_safe_speed
+    else:
+        return desired_speed
+
+
+# Example usage of the function
 if __name__ == "__main__":
-    # Call the weather function and print the result
-    print(weather())
+    weather = "Snowy"        # Current weather condition
+    driver_speed = 60        # Speed the driver wants to go
+
+    # Calculate the safe speed based on weather
+    safe_speed = speed_limiter(weather, driver_speed)
+
+    # Output the result
+    print(f"Weather: {weather}")
+    print(f"Requested speed: {driver_speed} mph")
+    print(f"Allowed speed: {safe_speed} mph")
