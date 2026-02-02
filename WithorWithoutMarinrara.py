@@ -1,27 +1,57 @@
-#Weather Branch
+# Weather Branch
+# This program adjusts an alarm time and recommends a safe driving speed
+# based on current weather conditions.
 
 from datetime import datetime, timedelta
 
-# Function to adjust alarm time based on weather conditions
+
+# ---------------------------------------------------
+# Function: adjust_alarm
+# Purpose:
+#   Adjusts the alarm time earlier if weather conditions
+#   could cause slower or more dangerous travel.
+#
+# Parameters:
+#   original_alarm_time (datetime): The user's normal alarm time
+#   weather (str): Current weather condition
+#
+# Returns:
+#   datetime: Updated alarm time (earlier if weather is bad)
+# ---------------------------------------------------
 def adjust_alarm(original_alarm_time, weather):
-    # Weather conditions that require waking up earlier
+
+    # List of weather conditions that may slow down commuting
+    # and therefore require waking up earlier
     bad_weather = ["Rainy", "Foggy", "Snowy", "Stormy", "Icy"]
 
-    # Minutes to wake up earlier if weather is bad
+    # Number of minutes to wake up earlier when weather is bad
     early_wakeup_minutes = 30
 
-    # Check if current weather is considered bad
+    # Check if the current weather is in the list of bad conditions
     if weather in bad_weather:
-        # Subtract time from the original alarm
+        # Subtract 30 minutes from the original alarm time
+        # timedelta is used to safely handle time arithmetic
         return original_alarm_time - timedelta(minutes=early_wakeup_minutes)
     else:
-        # Keep the same alarm time if weather is good
+        # If the weather is good, keep the original alarm time
         return original_alarm_time
 
 
-# Function to determine safe driving speed based on weather
+# ---------------------------------------------------
+# Function: recommended_speed
+# Purpose:
+#   Determines a safe driving speed based on weather conditions.
+#
+# Parameters:
+#   weather (str): Current weather condition
+#
+# Returns:
+#   int: Recommended speed in miles per hour (mph)
+# ---------------------------------------------------
 def recommended_speed(weather):
-    # Dictionary mapping weather conditions to safe speeds (mph)
+
+    # Dictionary that maps weather conditions to safe driving speeds
+    # Speeds are lower for dangerous conditions like ice or snow
     weather_speed_limits = {
         "Sunny": 70,
         "Cloudy": 65,
@@ -32,26 +62,32 @@ def recommended_speed(weather):
         "Icy": 25
     }
 
-    # Return the safe speed for the weather
-    # If weather is unknown, default to 50 mph
+    # Return the speed associated with the weather condition
+    # If the weather is not found in the dictionary,
+    # default to 50 mph as a safe fallback
     return weather_speed_limits.get(weather, 50)
 
 
-# Main program
+# ---------------------------------------------------
+# Main Program Execution
+# This block only runs when the script is executed directly
+# ---------------------------------------------------
 if __name__ == "__main__":
-    # Set your normal alarm time (7:00 AM)
+
+    # Set the normal alarm time to 7:00 AM
+    # datetime.strptime converts a string into a datetime object
     alarm_time = datetime.strptime("07:00", "%H:%M")
 
-    # Current weather condition
+    # Define the current weather condition
     current_weather = "Snowy"
 
-    # Adjust alarm based on weather
+    # Adjust the alarm time based on weather conditions
     updated_alarm = adjust_alarm(alarm_time, current_weather)
 
-    # Get recommended driving speed
+    # Get a safe driving speed recommendation
     safe_speed = recommended_speed(current_weather)
 
-    # Display results
+    # Display the results to the user
     print(f"Weather: {current_weather}")
     print(f"Original alarm: {alarm_time.strftime('%I:%M %p')}")
     print(f"Updated alarm: {updated_alarm.strftime('%I:%M %p')}")
