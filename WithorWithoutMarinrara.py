@@ -1,370 +1,120 @@
-import random  # Used to generate random values for simulation
+#Gasoline Branch
 
-"""
-Gas Monitoring System
----------------------
-This program simulates a basic car gas monitoring system.
+import random
 
-It performs the following steps:
-1. Reads the car's current gas level (randomized)
-2. Checks whether the gas level is below a safe threshold
-3. Finds nearby gas stations
-4. Determines the closest and cheapest station
-5. Triggers an alert if the gas level is low
+# ------------------------------------------------------------
+# CONFIGURATION SECTION
+# ------------------------------------------------------------
 
-NOTE:
-- All data is mocked (fake) for learning/testing purposes.
-- Real-world versions would use car sensors, GPS, and external APIs.
-"""
+# Total capacity of the gas tank (in gallons)
+# This is used only for reference and clarity
+TANK_CAPACITY = 16.0
 
-# -------------------------------
-# CONFIGURATION
-# -------------------------------
+# Quarter tank threshold (25% of total capacity)
+QUARTER_TANK_LEVEL = TANK_CAPACITY * 0.25
 
-# Minimum safe gas level (percentage)
-# If gas falls below or equals this value, the system triggers an alert
-LOW_GAS_THRESHOLD = 25  
+# List of possible gas stations to randomly choose from
+GAS_STATIONS = [
+    "QuickFuel",
+    "Pump N Go",
+    "Rocket Gas",
+    "Fuel Barn",
+    "Speedway Plus",
+    "EZ Stop",
+    "Highway Fuel Hub",
+    "Corner Gas"
+]
 
-# Enables or disables the gas alert system
-ALARM_ENABLED = True
+# ------------------------------------------------------------
+# INPUT SECTION
+# ------------------------------------------------------------
 
+# Ask the user for the current gas level
+# This simulates reading the gas gauge
+current_gas = float(input("Enter current gas level in gallons: "))
 
-# -------------------------------
-# MOCK CAR DATA
-# -------------------------------
+# ------------------------------------------------------------
+# GAS LEVEL ANALYSIS
+# ------------------------------------------------------------
 
-def get_car_gas_level():
-    """
-    Simulates reading the car's current gas level.
+print("\n--- Gas Level Analysis ---")
 
-    In a real system, this data might come from:
-    - An OBD-II scanner
-    - A connected vehicle API (Tesla, Ford, etc.)
+# Check if the gas level is below a quarter tank
+if current_gas < QUARTER_TANK_LEVEL:
+    print("⚠️ Gas level is below a quarter tank.")
+    needs_refueling = True
+else:
+    print("✅ Gas level is sufficient.")
+    needs_refueling = False
 
-    Returns:
-        int: A random gas level between 0% and 100%
-    """
-    return random.randint(0, 100)
+# ------------------------------------------------------------
+# PHONE ALARM DECISION (SIMULATED)
+# ------------------------------------------------------------
 
+# Since Python cannot actually set a phone alarm,
+# we simulate the logic and explain the decision.
+if needs_refueling:
+    print("⏰ Phone alarm should be set EARLIER to allow time for refueling.")
+else:
+    print("⏰ No need to change phone alarm.")
 
-# -------------------------------
-# MOCK LOCATION & GAS STATIONS
-# -------------------------------
+# ------------------------------------------------------------
+# GAS STATION SELECTION
+# ------------------------------------------------------------
 
-def get_current_location():
-    """
-    Simulates retrieving the car's GPS location.
+print("\n--- Nearby Gas Stations ---")
 
-    Returns:
-        dict: Latitude and longitude of the car
-    """
-    return {"lat": 40.7128, "lon": -74.0060}  # Example location: New York City
+# Randomly select between 3 and 5 gas stations from the list
+available_stations = random.sample(GAS_STATIONS, random.randint(3, 5))
 
+# Display the randomly selected gas stations
+for station in available_stations:
+    print(f"- {station}")
 
-def get_nearby_gas_stations(location):
-    """
-    Simulates finding nearby gas stations based on location.
+# ------------------------------------------------------------
+# CHEAPEST GAS STATION DECISION
+# ------------------------------------------------------------
 
-    In a real application, this function might call:
-    - Google Maps API
-    - Yelp API
-    - GasBuddy API
+# Randomly pick ONE station and declare it the cheapest
+cheapest_station = random.choice(available_stations)
 
-    Args:
-        location (dict): The car's current GPS coordinates
+print(f"\n💰 Cheapest gas (probably): {cheapest_station}")
 
-    Returns:
-        list: A list of gas stations with distance and fuel price
-    """
-    return [
-        {"name": "Shell", "distance_km": 1.2, "price_per_gallon": 3.89},
-        {"name": "Exxon", "distance_km": 0.8, "price_per_gallon": 3.99},
-        {"name": "Costco Gas", "distance_km": 4.5, "price_per_gallon": 3.59},
-    ]
+# ------------------------------------------------------------
+# SNACKS AND SLURPIES CHECK
+# ------------------------------------------------------------
 
+# Randomly decide whether the cheapest station has snacks
+has_snacks = random.choice([True, False])
 
-# -------------------------------
-# DECISION LOGIC
-# -------------------------------
+# Randomly decide whether the cheapest station has Slurpies
+has_slurpies = random.choice([True, False])
 
-def needs_gas(gas_level):
-    """
-    Determines whether the car needs refueling.
+print("\n--- Important Amenities ---")
 
-    Args:
-        gas_level (int): Current gas level percentage
+# Snacks availability result
+if has_snacks:
+    print("🍫 Snacks available: YES")
+else:
+    print("🍫 Snacks available: NO")
 
-    Returns:
-        bool: True if gas is low, False otherwise
-    """
-    return gas_level <= LOW_GAS_THRESHOLD
+# Slurpies availability result
+if has_slurpies:
+    print("🥤 Slurpies available: YES")
+else:
+    print("🥤 Slurpies available: NO")
 
+# ------------------------------------------------------------
+# FINAL RECOMMENDATION
+# ------------------------------------------------------------
 
-def find_closest_gas_station(stations):
-    """
-    Finds the gas station with the shortest distance.
+print("\n--- Final Recommendation ---")
 
-    Args:
-        stations (list): List of gas station dictionaries
-
-    Returns:
-        dict: The closest gas station
-    """
-    return min(stations, key=lambda s: s["distance_km"])
-
-
-def find_cheapest_gas_station(stations):
-    """
-    Finds the gas station with the lowest fuel price.
-
-    Args:
-        stations (list): List of gas station dictionaries
-
-    Returns:
-        dict: The cheapest gas station
-    """
-    return min(stations, key=lambda s: s["price_per_gallon"])
-
-
-# -------------------------------
-# ALERT SYSTEM
-# -------------------------------
-
-def trigger_gas_alarm(gas_level):
-    """
-    Displays a warning message when gas is critically low.
-
-    Args:
-        gas_level (int): Current gas level percentage
-    """
-    if ALARM_ENABLED:
-        print("🚨 GAS ALERT 🚨")
-        print(f"Gas level is LOW: {gas_level}%")
-        print("Please refuel soon!")
-
-
-# -------------------------------
-# MAIN PROGRAM
-# -------------------------------
-
-def main():
-    """
-    Main execution function.
-    Controls the overall flow of the program.
-    """
-
-    # Get current gas level and location
-    gas_level = get_car_gas_level()
-    location = get_current_location()
-
-    # Display current gas level
-    print(f"Current gas level: {gas_level}%")
-
-    # Check if refueling is required
-    if needs_gas(gas_level):
-        trigger_gas_alarm(gas_level)
-
-        # Retrieve nearby gas stations
-        stations = get_nearby_gas_stations(location)
-
-        # Find best options
-        closest = find_closest_gas_station(stations)
-        cheapest = find_cheapest_gas_station(stations)
-
-        # Display results
-        print("\n⛽ Gas Stations:")
-        print(f"Closest: {closest['name']} ({closest['distance_km']} km away)")
-        print(f"Cheapest: {cheapest['name']} (${cheapest['price_per_gallon']}/gal)")
+if needs_refueling:
+    print(f"➡️ Stop at {cheapest_station} to refuel.")
+    if has_snacks or has_slurpies:
+        print("😋 Bonus: Treat yourself while you're there.")
     else:
-        print("✅ Gas level is sufficient. No need to refuel.")
-
-
-# Program entry point
-# Ensures the main function runs only when this file is executed directly
-if __name__ == "__main__":
-    main()
-import random  # Used to generate random values for simulation
-
-"""
-Gas Monitoring System
----------------------
-This program simulates a basic car gas monitoring system.
-
-It performs the following steps:
-1. Reads the car's current gas level (randomized)
-2. Checks whether the gas level is below a safe threshold
-3. Finds nearby gas stations
-4. Determines the closest and cheapest station
-5. Triggers an alert if the gas level is low
-
-NOTE:
-- All data is mocked (fake) for learning/testing purposes.
-- Real-world versions would use car sensors, GPS, and external APIs.
-"""
-
-# -------------------------------
-# CONFIGURATION
-# -------------------------------
-
-# Minimum safe gas level (percentage)
-# If gas falls below or equals this value, the system triggers an alert
-LOW_GAS_THRESHOLD = 25  
-
-# Enables or disables the gas alert system
-ALARM_ENABLED = True
-
-
-# -------------------------------
-# MOCK CAR DATA
-# -------------------------------
-
-def get_car_gas_level():
-    """
-    Simulates reading the car's current gas level.
-
-    In a real system, this data might come from:
-    - An OBD-II scanner
-    - A connected vehicle API (Tesla, Ford, etc.)
-
-    Returns:
-        int: A random gas level between 0% and 100%
-    """
-    return random.randint(0, 100)
-
-
-# -------------------------------
-# MOCK LOCATION & GAS STATIONS
-# -------------------------------
-
-def get_current_location():
-    """
-    Simulates retrieving the car's GPS location.
-
-    Returns:
-        dict: Latitude and longitude of the car
-    """
-    return {"lat": 40.7128, "lon": -74.0060}  # Example location: New York City
-
-
-def get_nearby_gas_stations(location):
-    """
-    Simulates finding nearby gas stations based on location.
-
-    In a real application, this function might call:
-    - Google Maps API
-    - Yelp API
-    - GasBuddy API
-
-    Args:
-        location (dict): The car's current GPS coordinates
-
-    Returns:
-        list: A list of gas stations with distance and fuel price
-    """
-    return [
-        {"name": "Shell", "distance_km": 1.2, "price_per_gallon": 3.89},
-        {"name": "Exxon", "distance_km": 0.8, "price_per_gallon": 3.99},
-        {"name": "Costco Gas", "distance_km": 4.5, "price_per_gallon": 3.59},
-    ]
-
-
-# -------------------------------
-# DECISION LOGIC
-# -------------------------------
-
-def needs_gas(gas_level):
-    """
-    Determines whether the car needs refueling.
-
-    Args:
-        gas_level (int): Current gas level percentage
-
-    Returns:
-        bool: True if gas is low, False otherwise
-    """
-    return gas_level <= LOW_GAS_THRESHOLD
-
-
-def find_closest_gas_station(stations):
-    """
-    Finds the gas station with the shortest distance.
-
-    Args:
-        stations (list): List of gas station dictionaries
-
-    Returns:
-        dict: The closest gas station
-    """
-    return min(stations, key=lambda s: s["distance_km"])
-
-
-def find_cheapest_gas_station(stations):
-    """
-    Finds the gas station with the lowest fuel price.
-
-    Args:
-        stations (list): List of gas station dictionaries
-
-    Returns:
-        dict: The cheapest gas station
-    """
-    return min(stations, key=lambda s: s["price_per_gallon"])
-
-
-# -------------------------------
-# ALERT SYSTEM
-# -------------------------------
-
-def trigger_gas_alarm(gas_level):
-    """
-    Displays a warning message when gas is critically low.
-
-    Args:
-        gas_level (int): Current gas level percentage
-    """
-    if ALARM_ENABLED:
-        print("🚨 GAS ALERT 🚨")
-        print(f"Gas level is LOW: {gas_level}%")
-        print("Please refuel soon!")
-
-
-# -------------------------------
-# MAIN PROGRAM
-# -------------------------------
-
-def main():
-    """
-    Main execution function.
-    Controls the overall flow of the program.
-    """
-
-    # Get current gas level and location
-    gas_level = get_car_gas_level()
-    location = get_current_location()
-
-    # Display current gas level
-    print(f"Current gas level: {gas_level}%")
-
-    # Check if refueling is required
-    if needs_gas(gas_level):
-        trigger_gas_alarm(gas_level)
-
-        # Retrieve nearby gas stations
-        stations = get_nearby_gas_stations(location)
-
-        # Find best options
-        closest = find_closest_gas_station(stations)
-        cheapest = find_cheapest_gas_station(stations)
-
-        # Display results
-        print("\n⛽ Gas Stations:")
-        print(f"Closest: {closest['name']} ({closest['distance_km']} km away)")
-        print(f"Cheapest: {cheapest['name']} (${cheapest['price_per_gallon']}/gal)")
-    else:
-        print("✅ Gas level is sufficient. No need to refuel.")
-
-
-# Program entry point
-# Ensures the main function runs only when this file is executed directly
-if __name__ == "__main__":
-    main()
+        print("😐 Fuel only. No fun snacks this time.")
+else:
+    print("🚗 You're good to keep driving. No refuel needed right now.")
