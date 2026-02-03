@@ -92,7 +92,9 @@ GAS_STATIONS = [
 
 # Ask the user for the current gas level
 # This simulates reading the gas gauge
-current_gas = float(input("Enter current gas level in gallons: "))
+
+current_gas = round(random.uniform(0, 16.0), 2)
+
 
 # ------------------------------------------------------------
 # GAS LEVEL ANALYSIS
